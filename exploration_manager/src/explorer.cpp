@@ -1,4 +1,5 @@
 #include "exploration_manager/explorer.h"
+#include "ros/console.h"
 #include "ros/this_node.h"
 
 namespace explorer {
@@ -46,7 +47,9 @@ Explorer::Explorer(ros::NodeHandle &nh, ros::NodeHandle &private_nh)
                               [this](const ros::TimerEvent &) { makePlan(); });
 }
 
-Explorer::~Explorer() { stop(); }
+Explorer::~Explorer() { 
+    ROS_ERROR("END");
+    stop(); }
 
 void Explorer::visualizeFrontiers(const std::vector<Frontier> &frontiers) {
   std_msgs::ColorRGBA blue;

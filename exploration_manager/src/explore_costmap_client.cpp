@@ -33,12 +33,12 @@ namespace explorer {
         std::string costmap_topic;
         std::string footprint_topic;
         std::string costmap_updates_topic;
-        nh_.param("costmap_topic", costmap_topic, std::string("costmap"));
-        nh_.param("costmap_updates_topic", costmap_updates_topic, std::string("costmap_updates"));
-        nh_.param("robot_base_frame", robot_base_frame_, std::string("base_link"));
-        nh_.param("transform_tolerance", transform_tolerance_, 0.3);
+        nh_private_.param("costmap_topic", costmap_topic, std::string("costmap"));
+        nh_private_.param("costmap_updates_topic", costmap_updates_topic, std::string("costmap_updates"));
+        nh_private_.param("robot_base_frame", robot_base_frame_, std::string("base_link"));
+        nh_private_.param("transform_tolerance", transform_tolerance_, 0.3);
 
-        costmap_sub_ = nh_private_.subscribe<nav_msgs::OccupancyGrid>(
+        costmap_sub_ = nh_.subscribe<nav_msgs::OccupancyGrid>(
             costmap_topic, 1000,
             [this](const nav_msgs::OccupancyGrid::ConstPtr& msg) {
               updateFullMap(msg);
@@ -46,12 +46,12 @@ namespace explorer {
         ROS_INFO("Waiting for costmap to become available, topic: %s", costmap_topic.c_str());
 
         auto costmap_msg = ros::topic::waitForMessage<nav_msgs::OccupancyGrid>(
-            costmap_topic, nh_private_);
+            costmap_topic, nh_);
         updateFullMap(costmap_msg);
 
         /* subscribe to map updates */
         costmap_updates_sub_ =
-        nh_private_.subscribe<map_msgs::OccupancyGridUpdate>(
+        nh_.subscribe<map_msgs::OccupancyGridUpdate>(
             costmap_updates_topic, 1000,
             [this](const map_msgs::OccupancyGridUpdate::ConstPtr& msg) {
                 updatePartialMap(msg);
@@ -60,7 +60,7 @@ namespace explorer {
         ROS_INFO("Waiting for costmap updates to become available, topic: %s", costmap_updates_topic.c_str());
 
          /* resolve tf prefix for robot_base_frame */
-        std::string tf_prefix = tf::getPrefixParam(nh_private_);
+        std::string tf_prefix = tf::getPrefixParam(nh_);
         robot_base_frame_ = tf::resolve(tf_prefix, robot_base_frame_);
 
 

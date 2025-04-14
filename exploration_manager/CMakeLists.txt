@@ -186,8 +186,8 @@ include_directories(
 # )
 
 add_executable(2d_explore
-  src/explorer.cpp
   src/explorer_node.cpp
+  src/explorer.cpp
   src/explore_frontier_search.cpp
   src/explore_costmap_client.cpp
 )
@@ -202,6 +202,10 @@ install(TARGETS 2d_explore
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY launch/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 )
 
 # all install targets should use catkin DESTINATION variables
@@ -245,6 +249,13 @@ install(TARGETS 2d_explore
 #############
 ## Testing ##
 #############
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(roslaunch REQUIRED)
+
+  # test all launch files
+  roslaunch_add_file_check(launch)
+endif()
 
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_exploration_manager.cpp)
