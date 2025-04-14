@@ -49,7 +49,8 @@
   <!-- Use doc_depend for packages you need only for building documentation: -->
   <!--   <doc_depend>doxygen</doc_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>geometry_msgs</build_depend>
+
+  <!-- <build_depend>geometry_msgs</build_depend>
   <build_depend>nav_msgs</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
@@ -63,7 +64,21 @@
   <exec_depend>nav_msgs</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>std_msgs</exec_depend>
-  <exec_depend>tf</exec_depend>
+  <exec_depend>tf</exec_depend> -->
+
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>move_base_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>map_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>actionlib_msgs</depend>
+  <depend>tf</depend>
+  <depend>costmap_2d</depend>
+  <depend>actionlib</depend>
+
+  <test_depend>roslaunch</test_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

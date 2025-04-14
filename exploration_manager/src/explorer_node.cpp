@@ -1,4 +1,4 @@
-#include <explorer/explorer.h>
+#include <exploration_manager/explorer.h>
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "explorer_node");
