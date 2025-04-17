@@ -18,6 +18,7 @@
 #include <exploration_manager/explore_frontier_search.h>
 
 #include <alg_public_msgs/TaskA2BMoveAction.h>
+#include <navit_costmap_2d/costmap_2d_ros.h>
 
 namespace explorer {
 class Explorer {
@@ -27,11 +28,20 @@ public:
     kReal = 1 // Run with real robot.
   };
 
-  Explorer(ros::NodeHandle &nh, ros::NodeHandle &private_nh);
+  Explorer(ros::NodeHandle &nh, ros::NodeHandle &private_nh,
+           std::shared_ptr<tf2_ros::Buffer> &tf_buffer,
+           std::shared_ptr<navit_costmap_2d::Costmap2DROS> &costmap_ros);
   ~Explorer();
 
   void start();
   void stop();
+
+protected:
+  std::shared_ptr<navit_costmap_2d::Costmap2DROS> costmap_ros_;
+
+  std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
+
+  std::shared_ptr<ExploreFrontierSearch> search_;
 
 private:
   bool loadParams();
@@ -61,16 +71,16 @@ private:
 
   bool goalOnBlacklist(const geometry_msgs::Point &goal);
 
-//   ros::NodeHandle private_nh_;
-//   ros::NodeHandle relative_nh_;
+  //   ros::NodeHandle private_nh_;
+  //   ros::NodeHandle relative_nh_;
   ros::Publisher marker_array_publisher_;
   tf::TransformListener tf_listener_;
 
-  ExploreCostmapClient costmap_client_;
+  // ExploreCostmapClient costmap_client_;
   std::shared_ptr<
       actionlib::SimpleActionClient<alg_public_msgs::TaskA2BMoveAction>>
       ac_;
-  ExploreFrontierSearch search_;
+
   ros::Timer exploring_timer_;
   ros::Timer oneshot_;
 

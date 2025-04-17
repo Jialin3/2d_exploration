@@ -31,6 +31,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   visualization_msgs
+  navit_costmap_2d
+  navit_collision_checker
 )
 
 ## System dependencies are found with CMake's conventions
@@ -142,6 +144,8 @@ catkin_package(
     std_msgs
     tf
     visualization_msgs
+    navit_costmap_2d
+    navit_collision_checker
 )
 
 ###########

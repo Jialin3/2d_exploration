@@ -77,6 +77,8 @@
   <depend>tf</depend>
   <depend>costmap_2d</depend>
   <depend>actionlib</depend>
+  <depend>navit_collision_checker</depend>
+  <depend>navit_costmap_2d</depend>
 
   <test_depend>roslaunch</test_depend>
 

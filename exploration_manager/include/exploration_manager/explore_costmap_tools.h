@@ -1,19 +1,21 @@
 #ifndef EXPLORATION_MANAGER_EXPLORE_COSTMAP_TOOLS_H_
 #define EXPLORATION_MANAGER_EXPLORE_COSTMAP_TOOLS_H_
-#include <costmap_2d/costmap_2d.h>
+// #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/PointStamped.h>
 #include <geometry_msgs/PolygonStamped.h>
+#include <navit_costmap_2d/costmap_2d_ros.h>
 #include <ros/ros.h>
 
 namespace explorer {
 
-std::vector<unsigned int> nhood4(unsigned int idx,
-                                 const costmap_2d::Costmap2D &costmap) {
+std::vector<unsigned int>
+nhood4(unsigned int idx,
+       const std::shared_ptr<navit_costmap_2d::Costmap2D> &costmap) {
   // get 4-connected neighbourhood indexes, check for edge of map
   std::vector<unsigned int> out;
 
-  unsigned int size_x_ = costmap.getSizeInCellsX(),
-               size_y_ = costmap.getSizeInCellsY();
+  unsigned int size_x_ = costmap->getSizeInCellsX(),
+               size_y_ = costmap->getSizeInCellsY();
 
   if (idx > size_x_ * size_y_ - 1) {
     ROS_WARN("Evaluating nhood for offmap point");
@@ -35,13 +37,14 @@ std::vector<unsigned int> nhood4(unsigned int idx,
   return out;
 }
 
-std::vector<unsigned int> nhood8(unsigned int idx,
-                                 const costmap_2d::Costmap2D &costmap) {
+std::vector<unsigned int>
+nhood8(unsigned int idx,
+       const std::shared_ptr<navit_costmap_2d::Costmap2D> &costmap) {
   // get 8-connected neighbourhood indexes, check for edge of map
   std::vector<unsigned int> out = nhood4(idx, costmap);
 
-  unsigned int size_x_ = costmap.getSizeInCellsX(),
-               size_y_ = costmap.getSizeInCellsY();
+  unsigned int size_x_ = costmap->getSizeInCellsX(),
+               size_y_ = costmap->getSizeInCellsY();
 
   if (idx > size_x_ * size_y_ - 1) {
     return out;
@@ -64,10 +67,10 @@ std::vector<unsigned int> nhood8(unsigned int idx,
 }
 
 bool nearestCell(unsigned int &result, unsigned int start, unsigned char val,
-                 const costmap_2d::Costmap2D &costmap) {
-  const unsigned char *map = costmap.getCharMap();
-  const unsigned int size_x = costmap.getSizeInCellsX(),
-                     size_y = costmap.getSizeInCellsY();
+                 const std::shared_ptr<navit_costmap_2d::Costmap2D> &costmap) {
+  const unsigned char *map = costmap->getCharMap();
+  const unsigned int size_x = costmap->getSizeInCellsX(),
+                     size_y = costmap->getSizeInCellsY();
 
   // ROS_DEBUG("[nearestCell] Start searching for value %d from index %u (map
   // size: %ux%u)", val, start, size_x, size_y);

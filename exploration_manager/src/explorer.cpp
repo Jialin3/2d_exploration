@@ -1,12 +1,15 @@
 #include "exploration_manager/explorer.h"
 #include "ros/console.h"
 #include "ros/this_node.h"
+#include <memory>
 
 namespace explorer {
-Explorer::Explorer(ros::NodeHandle &nh, ros::NodeHandle &private_nh)
-    : nh_(nh), nh_private_(private_nh), tf_listener_(ros::Duration(5)),
-      costmap_client_(nh_, nh_private_, &tf_listener_), prev_distance_(0),
-      last_markers_count_(0) {
+Explorer::Explorer(ros::NodeHandle &nh, ros::NodeHandle &private_nh,
+                   std::shared_ptr<tf2_ros::Buffer> &tf_buffer,
+                   std::shared_ptr<navit_costmap_2d::Costmap2DROS> &costmap_ros,
+                   std::shared_ptr<ExploreFrontierSearch> &search)
+    : nh_(nh), nh_private_(private_nh), tf_buffer_(tf_buffer),
+      costmap_ros_(costmap_ros), search_(search) {
   double timeout;
   double min_frontier_size;
   nh_.param("planner_frequency", planner_frequency_, 1.0);
@@ -17,10 +20,6 @@ Explorer::Explorer(ros::NodeHandle &nh, ros::NodeHandle &private_nh)
   nh_.param("orientation_scale", orientation_scale_, 0.0);
   nh_.param("gain_scale", gain_scale_, 1.0);
   nh_.param("min_frontier_size", min_frontier_size, 0.5);
-
-  search_ =
-      ExploreFrontierSearch(costmap_client_.getCostmap(), potential_scale_,
-                            gain_scale_, min_frontier_size);
 
   // 添加：记录初始位置
   auto initial_pose = costmap_client_.getRobotPose();
@@ -47,9 +46,10 @@ Explorer::Explorer(ros::NodeHandle &nh, ros::NodeHandle &private_nh)
                               [this](const ros::TimerEvent &) { makePlan(); });
 }
 
-Explorer::~Explorer() { 
-    ROS_ERROR("END");
-    stop(); }
+Explorer::~Explorer() {
+  ROS_ERROR("END");
+  stop();
+}
 
 void Explorer::visualizeFrontiers(const std::vector<Frontier> &frontiers) {
   std_msgs::ColorRGBA blue;
